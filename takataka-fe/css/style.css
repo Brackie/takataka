@@ -1,0 +1,160 @@
+body{
+    background-color: rgb(223, 223, 223);
+}
+h1{
+    border-bottom: 1.5px #000 solid;
+}
+h2{
+    text-align: left;
+}
+table{
+    width: 90%;
+    margin: auto;
+}
+table tr:nth-child(odd){
+    background-color: #fff;
+}
+form{
+    width: 60%;
+    text-align: center;
+    margin: 0 auto;
+}
+form img{
+    width: 80px;
+    height: auto;
+    display: block;
+}
+input{
+    width: 80%;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid rgb(128, 125, 125);
+    margin: 10px;
+    padding-left: 10px;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    display: block;
+}
+
+/* SideNav */
+.sidenav{
+    width: 22%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(128, 125, 125);
+}
+.sidenav img{
+    width: 100px;
+    height: auto;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+}
+.sidenav ul{
+    width: 100%;
+}
+.sidenav ul>li{
+    list-style: none;
+    margin: 15px 0;
+}
+.sidenav li>a{
+    text-decoration: none;
+    color: white;
+    font-size: 24px;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Container */
+.container{
+    width: 78.5%;
+    position: relative;
+    left: 22.5%;
+}
+
+/* Flex */
+.row{
+    width: 100%;
+    display: flex;
+}
+
+.col{
+    flex-grow: 1;
+    text-align: center;
+}
+.col-30{
+    flex-basis: 33.67%;
+    max-width: 33.67%;
+}
+
+/* Home */
+.home{
+    width: 60%;
+    margin: auto;
+    text-align: center;
+    color: #EF7D00;
+}
+
+.home h2{
+    text-align: center;
+}
+
+.home h2:nth-child(2){
+    margin-top: 100px;
+}
+
+.home p:nth-child(3),
+.home p:nth-child(7){
+    font-size: 100px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.home p:nth-child(3) span{
+    font-size: 20px;
+    display: inline-block;
+    transform: translate(-12px, -20px);
+}
+
+.home p:nth-child(5){
+    font-size: 20px;
+    color: #8f8e8e;
+}
+
+/* Products */
+.products{
+    width: 100%;
+}
+.product{
+    width: 80%;
+    height: auto;
+    margin: auto;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+.product p{
+    width: 100%;
+    padding: 10px 5px;
+    background-color: #fff;
+}
+
+/* Profile */
+.profile{
+    width: 100%;
+    text-align: center;
+}
+
+/* Auth */
+.auth{
+    width: 100%;
+    text-align: center;
+}
+.dialog{
+    width: 40%;
+    margin: auto;
+    text-align: center;
+    background-color: #fff;
+    margin-top: 10%;
+    padding: 10px 0;
+}
