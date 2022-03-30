@@ -1,5 +1,5 @@
-# kenso_backend
-A water pump sales backend done in Flask (https://flask.palletsprojects.com/en/2.0.x/quickstart/#)
+# takataka_backend
+A garbage collection and sales backend done in Flask (https://flask.palletsprojects.com/en/2.0.x/quickstart/#)
 
 
 ## Installations
