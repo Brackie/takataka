@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "5cd9d3ff-6733-4f9f-a391-45563f284491",
-		"name": "kenso",
+		"_postman_id": "b7698361-e6d3-400b-a0a7-bad8ef2e2d34",
+		"name": "takataka",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -49,28 +49,51 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/admin/register",
+					"raw": "http://localhost:5000/user/register?username=adricoder&email=kimaru.araap.bett@gmail.com&phone=+254796226530&address=Lantana road&password=Onahuyu",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5000",
 					"path": [
-						"admin",
+						"user",
 						"register"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "adricoder",
+							"description": "."
+						},
+						{
+							"key": "email",
+							"value": "kimaru.araap.bett@gmail.com"
+						},
+						{
+							"key": "phone",
+							"value": "+254796226530"
+						},
+						{
+							"key": "address",
+							"value": "Lantana road"
+						},
+						{
+							"key": "password",
+							"value": "Onahuyu"
+						}
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "client/login",
+			"name": "user/login",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"muimikieleko@gmail.com\",\r\n    \"pwd\": \"1234567890\"\r\n}",
+					"raw": "{\r\n    \"email\": \"kimaru.araap.bett@gmail.com\",\r\n    \"password\": \"OnaHuyu\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -78,14 +101,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/client/login",
+					"raw": "http://localhost:5000/user/login",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5000",
 					"path": [
-						"client",
+						"user",
 						"login"
 					]
 				}
@@ -93,13 +116,13 @@
 			"response": []
 		},
 		{
-			"name": "client/register",
+			"name": "user/register",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"full_name\": \"Braxton Muimi\",\r\n    \"email\": \"muimikieleko@gmail.com\",\r\n    \"phone_number\": \"0713398529\",\r\n    \"address\": \"Westlands Pride, Waiyaki Way\",\r\n    \"pwd\": \"1234567890\"\r\n}",
+					"raw": "{\r\n    \"username\": \"adricoder\",\r\n    \"email\": \"kimaru.araap.bett@gmail.com\",\r\n    \"phone\": \"0796226530\",\r\n    \"address\": \" Pride, Waiyaki Way\",\r\n    \"password\": \"OnaHuyu\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -107,14 +130,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/client/register",
+					"raw": "http://localhost:5000/user/register",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5000",
 					"path": [
-						"client",
+						"user",
 						"register"
 					]
 				}
@@ -129,7 +152,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MzM2MDgwMjksInR5cCI6ImNsaWVudCIsInN1YiI6IjU5NWRjZmU1LTFmNzEtMTFlYy04MjczLTQ4YmE0ZTU4MDZhOCJ9.SAUl_4B4UC8qJhTxIX2X-7b8P0sEOcBhoJKBxsYFh50",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDk2NDA5NTYsInR5cCI6InVzZXIiLCJzdWIiOjJ9.hQfBV3cS-MJyLLq875Yn32s1kN8BHytZoHO8pmgH8iQ",
 							"type": "string"
 						}
 					]
@@ -137,15 +160,21 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/client/profile",
+					"raw": "http://localhost:5000/user/profile?id=2",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5000",
 					"path": [
-						"client",
+						"user",
 						"profile"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "2"
+						}
 					]
 				}
 			},
@@ -339,7 +368,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MzM2MjM2ODUsInR5cCI6ImNsaWVudCIsInN1YiI6ImNlNTljZDViLTFmOTUtMTFlYy04MjczLTQ4YmE0ZTU4MDZhOCJ9.qejHkKbz5OZHDFTwmV__KmDP4VS6ZJ3Mh1BzX652adI",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDk2NDI5OTMsInR5cCI6InVzZXIiLCJzdWIiOjJ9.BHqG6YQO5985Vr3iEE6NOMCWpG_XCPmE2UnfGkrOHrQ",
 							"type": "string"
 						}
 					]
@@ -356,14 +385,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/order/upload",
+					"raw": "http://localhost:5000/orders/upload",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5000",
 					"path": [
-						"order",
+						"orders",
 						"upload"
 					]
 				}
@@ -408,7 +437,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MzM2MTA0NDIsInR5cCI6ImFkbWluIiwic3ViIjoiN2ZkNjEzZjQtMWY2ZS0xMWVjLTgyNzMtNDhiYTRlNTgwNmE4In0.iLSPul4bTBFTVCfkbqxcLUn-Wcgh6Ejgr-ZTYmEJnVo",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDk2NDA5NTYsInR5cCI6InVzZXIiLCJzdWIiOjJ9.hQfBV3cS-MJyLLq875Yn32s1kN8BHytZoHO8pmgH8iQ",
 							"type": "string"
 						}
 					]
@@ -416,14 +445,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/order/view/d136d2fc-1fd2-11ec-8273-48ba4e5806a8",
+					"raw": "http://localhost:5000/orders/view/d136d2fc-1fd2-11ec-8273-48ba4e5806a8",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5000",
 					"path": [
-						"order",
+						"orders",
 						"view",
 						"d136d2fc-1fd2-11ec-8273-48ba4e5806a8"
 					]
@@ -519,7 +548,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MzM2MjM2ODUsInR5cCI6ImNsaWVudCIsInN1YiI6ImNlNTljZDViLTFmOTUtMTFlYy04MjczLTQ4YmE0ZTU4MDZhOCJ9.qejHkKbz5OZHDFTwmV__KmDP4VS6ZJ3Mh1BzX652adI",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDk2NDI1MDgsInR5cCI6InVzZXIiLCJzdWIiOjJ9.q4Iq38ldzkJY9xqc8dNEejArneZC1MIpajXF1DAz5bI",
 							"type": "string"
 						}
 					]
@@ -536,15 +565,25 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/feedback/upload",
+					"raw": "http://localhost:5000/announcement/upload?content=luku jitu&time",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5000",
 					"path": [
-						"feedback",
+						"announcement",
 						"upload"
+					],
+					"query": [
+						{
+							"key": "content",
+							"value": "luku jitu"
+						},
+						{
+							"key": "time",
+							"value": null
+						}
 					]
 				}
 			},
