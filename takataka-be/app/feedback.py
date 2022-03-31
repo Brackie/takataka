@@ -4,86 +4,86 @@ import jwt
 from datetime import datetime, timedelta
 
 
-bp = Blueprint('feedback', __name__, url_prefix='/feedback')
+bp = Blueprint('announcements', __name__, url_prefix='/announcements')
 
 
 @bp.route('upload', methods=['POST'])
-def upload_feedback():	
+def upload_announcements():	
     if request.content_type != 'application/json':
-        return make_response({'status': 0, 'message': 'Bad Request'}, 401)
+        return make_response({'status': 0, 'time': 'Bad Request'}, 401)
 
     token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
     if not token or token['typ'] != 'client':
-        return make_response({'status': 0, 'message': 'Please login first!'}, 401)
+        return make_response({'status': 0, 'time': 'Please login first!'}, 401)
 
     form_data = request.get_json()
 
     conn = db.get_db()
     cur = conn.cursor()
 
-    query = '''INSERT INTO `feedback` (message_id, client_id, subject, message) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN('{}'), '{}', '{}')'''.format(token['sub'], form_data['subject'], form_data['message'])
+    query = '''INSERT INTO `announcements` (id, content, time) VALUES ( '{}', '{}','{}')'''.format(token['sub'], form_data['content'], form_data['time'])
     result = cur.execute(query)
     conn.commit()
 
     if result < 1:
-        return make_response({'status': 0, 'message': "Server Error. Couldn't save message"}, 500)
+        return make_response({'status': 0, 'time': "Server Error. Couldn't save time"}, 500)
 
-    return make_response({'status': 1, 'message': 'Message Received :)'}, 200)
-
-
-@bp.route('all', methods=['GET'])
-def get_feedbacks():
-    token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
-    if token:
-        conn = db.get_db()
-        cur = conn.cursor()
-        query = '''SELECT BIN_TO_UUID(message_id) message_id, BIN_TO_UUID(client_id) client_id, subject, message, sent_at FROM `feedback` ORDER BY sent_at DESC'''
-        cur.execute(query)
-        conn.commit()
-        result = cur.fetchall()
-        if not result:
-            return make_response({'status': 0, 'message': 'No messages found'}, 404)
-        return make_response({'status': 1, 'message': 'Request successful', 'data': result}, 200)
-    else:
-        return make_response({'status': 0, 'message': 'Must be logged in to complete this request'}, 401)
+    return make_response({'status': 1, 'time': 'time Received :)'}, 200)
 
 
-@bp.route('view/<message_id>', methods=['GET'])
-def view_feedback(message_id):
-    token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
-    if token:
-        conn = db.get_db()
-        cur = conn.cursor()
-        query = '''SELECT BIN_TO_UUID(message_id) message_id, BIN_TO_UUID(client_id) client_id, subject, message, sent_at FROM `feedback` WHERE message_id = UUID_TO_BIN('{}') ORDER BY sent_at DESC LIMIT 1'''.format(message_id)
-        cur.execute(query)
-        conn.commit()
-        result = cur.fetchone()
-        if not result:
-            return make_response({'status': 0, 'message': 'Message not found'}, 404)
-        return make_response({'status': 1, 'message': 'Request successful', 'data': result}, 200)
-    else:
-        return make_response({'status': 0, 'message': 'Must be logged in to complete this request'}, 401)
+# @bp.route('all', methods=['GET'])
+# def get_announcementss():
+#     token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
+#     if token:
+#         conn = db.get_db()
+#         cur = conn.cursor()
+#         query = '''SELECT id, content, time, sent_at FROM `announcements` ORDER BY sent_at DESC'''
+#         cur.execute(query)
+#         conn.commit()
+#         result = cur.fetchall()
+#         if not result:
+#             return make_response({'status': 0, 'time': 'No times found'}, 404)
+#         return make_response({'status': 1, 'time': 'Request successful', 'data': result}, 200)
+#     else:
+#         return make_response({'status': 0, 'time': 'Must be logged in to complete this request'}, 401)
 
 
-@bp.route('delete/<message_id>', methods=['DELETE'])
-def delete_feedback(message_id):
-    if request.content_type != 'application/json':
-        return make_response({'status':0, 'message': 'Invalid content type'}, 400)
+# @bp.route('view/<id>', methods=['GET'])
+# def view_announcements(id):
+#     token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
+#     if token:
+#         conn = db.get_db()
+#         cur = conn.cursor()
+#         query = '''SELECT id, content, time, sent_at FROM `announcements` WHERE id = '{}' ORDER BY sent_at DESC LIMIT 1'''.format(id)
+#         cur.execute(query)
+#         conn.commit()
+#         result = cur.fetchone()
+#         if not result:
+#             return make_response({'status': 0, 'time': 'time not found'}, 404)
+#         return make_response({'status': 1, 'time': 'Request successful', 'data': result}, 200)
+#     else:
+#         return make_response({'status': 0, 'time': 'Must be logged in to complete this request'}, 401)
 
-    token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
-    request_data = request.get_json()
 
-    if token and token['typ'] == 'admin':
-        conn = db.get_db()
-        cur = conn.cursor()
-        del_query = "DELETE FROM `feedback` WHERE message_id = UUID_TO_BIN('{}')".format(message_id)
-        result = cur.execute(del_query)
-        conn.commit()
+# @bp.route('delete/<id>', methods=['DELETE'])
+# def delete_announcements(id):
+#     if request.content_type != 'application/json':
+#         return make_response({'status':0, 'time': 'Invalid content type'}, 400)
 
-        if result > 0:
-            return make_response({'status': 1, 'message': 'Request successful'}, 200)
+#     token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
+#     request_data = request.get_json()
 
-        return make_response({'status': 1, 'message': 'Message not found'}, 200)
+#     if token and token['typ'] == 'admin':
+#         conn = db.get_db()
+#         cur = conn.cursor()
+#         del_query = "DELETE FROM `announcements` WHERE id = ('{}')".format(id)
+#         result = cur.execute(del_query)
+#         conn.commit()
 
-    else:
-        return make_response({'status': 0, 'message': 'Must be logged in to complete this request'}, 401)
+#         if result > 0:
+#             return make_response({'status': 1, 'time': 'Request successful'}, 200)
+
+#         return make_response({'status': 1, 'time': 'time not found'}, 200)
+
+#     else:
+#         return make_response({'status': 0, 'time': 'Must be logged in to complete this request'}, 401)

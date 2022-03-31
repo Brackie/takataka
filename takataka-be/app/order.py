@@ -4,7 +4,7 @@ import jwt
 from datetime import datetime, timedelta
 
 
-bp = Blueprint('order', __name__, url_prefix='/order')
+bp = Blueprint('orders', __name__, url_prefix='/orders')
 
 
 @bp.route('upload', methods=['POST'])
@@ -13,7 +13,7 @@ def upload_order():
         return make_response({'status': 0, 'message': 'Bad Request'}, 401)
 
     token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
-    if not token or token['typ'] != 'client':
+    if not token or token['typ'] != 'user':
         return make_response({'status': 0, 'message': 'Please login first!'}, 401)
 
     form_data = request.get_json()
@@ -21,10 +21,10 @@ def upload_order():
     conn = db.get_db()
     cur = conn.cursor()
 
-    cur.execute("SELECT UUID() order_id")
-    order_id = cur.fetchone()["order_id"]
+    cur.execute("SELECT id")
+    order_id = cur.fetchone()["id"]
 
-    query = '''INSERT INTO `order` (order_id, client_id, payment_method, order_location) VALUES (UUID_TO_BIN('{}'), UUID_TO_BIN('{}'), '{}', '{}')'''.format(order_id, token['sub'], form_data['payment_method'], form_data['order_location'])
+    query = '''INSERT INTO `orders` (id, number, description, credit, debit, balance) VALUES ('{}', '{}', '{}', '{}','{}')'''.format(id, token['sub'], form_data['description'], form_data['order_location'])
     result = cur.execute(query)
     conn.commit()
 
@@ -38,7 +38,7 @@ def upload_order():
                 return make_response({'status': 1, 'message': 'Product not found', "product": item}, 404)	
 
             query = '''INSERT INTO order_item (order_item_id, order_id, product_id, item_quantity) VALUES 
-            (UUID_TO_BIN(UUID()), UUID_TO_BIN('{}'), UUID_TO_BIN('{}'), {})'''.format(order_id, item['product_id'], item['quantity'])
+            (, '{}','{}', {})'''.format(order_id, item['id'], item['quantity'])
             if cur.execute(query) < 1:
                 return make_response({'status': 0, 'message': "Server Error. Couldn't save order"}, 500)
 
@@ -51,7 +51,7 @@ def get_orders():
     if token:
         conn = db.get_db()
         cur = conn.cursor()
-        query = '''SELECT BIN_TO_UUID(order_id) order_id, BIN_TO_UUID(client_id) client_id, payment_method, order_location, ordered_at FROM `order` ORDER BY ordered_at DESC'''
+        query = '''SELECT id, number, description, credit, debit, balance ordered_at FROM `orders` ORDER BY ordered_at DESC'''
         cur.execute(query)
         conn.commit()
         result = cur.fetchall()
@@ -62,13 +62,13 @@ def get_orders():
         return make_response({'status': 0, 'message': 'Must be logged in to complete this request'}, 401)
 
 
-@bp.route('view/<order_id>', methods=['GET'])
-def view_order(order_id):
+@bp.route('view/<id>', methods=['GET'])
+def view_order(id):
     token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
     if token:
         conn = db.get_db()
         cur = conn.cursor()
-        query = '''SELECT BIN_TO_UUID(order_id) order_id, BIN_TO_UUID(client_id) client_id, payment_method, order_location, ordered_at FROM `order` WHERE order_id = UUID_TO_BIN('{}') ORDER BY ordered_at DESC LIMIT 1'''.format(order_id)
+        query = '''SELECT  id,number, description, credit, debit ordered_at FROM `orders` WHERE id = '{}' ORDER BY ordered_at DESC LIMIT 1'''.format(id)
         cur.execute(query)
         conn.commit()
         result = cur.fetchone()
@@ -79,45 +79,45 @@ def view_order(order_id):
         return make_response({'status': 0, 'message': 'Must be logged in to complete this request'}, 401)
 
 
-@bp.route('update/<order_id>', methods=['PATCH'])
-def edit_order(order_id):
-    token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
-    if not token or token['typ'] != 'admin':
-        return make_response({'status': 0, 'message': 'Please login first!'}, 401)
+# @bp.route('update/<id>', methods=['PATCH'])
+# def edit_order(order_id):
+#     token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
+#     if not token or token['typ'] != 'admin':
+#         return make_response({'status': 0, 'message': 'Please login first!'}, 401)
 
-    form_data = request.get_json()
+#     form_data = request.get_json()
 
-    edit_query = '''UPDATE `order` SET payment_method = '{}', order_location = '{}' WHERE order_id = UUID_TO_BIN('{}') LIMIT 1'''.format(form_data["payment_method"], form_data["order_location"], order_id)
-    conn = db.get_db()
-    cur = conn.cursor()
-    result = cur.execute(edit_query)
-    conn.commit()
+#     edit_query = '''UPDATE `order` SET description = '{}', order_location = '{}' WHERE order_id = UUID_TO_BIN('{}') LIMIT 1'''.format(form_data["description"], form_data["order_location"], order_id)
+#     conn = db.get_db()
+#     cur = conn.cursor()
+#     result = cur.execute(edit_query)
+#     conn.commit()
 
-    if result < 1:
-        return make_response({'status': 1, 'message': 'Server Error. Could not update order!'}, 500)
+#     if result < 1:
+#         return make_response({'status': 1, 'message': 'Server Error. Could not update order!'}, 500)
 
-    return make_response({'status': 1, 'message': 'Request Successful'}, 200)
+#     return make_response({'status': 1, 'message': 'Request Successful'}, 200)
 
 
-@bp.route('delete/<order_id>', methods=['DELETE'])
-def delete_order(order_id):
-    if request.content_type != 'application/json':
-        return make_response({'status':0, 'message': 'Invalid content type'}, 400)
+# @bp.route('delete/<id>', methods=['DELETE'])
+# def delete_order(id):
+#     if request.content_type != 'application/json':
+#         return make_response({'status':0, 'message': 'Invalid content type'}, 400)
 
-    token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
-    request_data = request.get_json()
+#     token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
+#     request_data = request.get_json()
 
-    if token and token['typ'] == 'admin':
-        conn = db.get_db()
-        cur = conn.cursor()
-        del_query = "DELETE FROM `order` WHERE order_id = UUID_TO_BIN('{}')".format(order_id)
-        result = cur.execute(del_query)
-        conn.commit()
+#     if token and token['typ'] == 'admin':
+#         conn = db.get_db()
+#         cur = conn.cursor()
+#         del_query = "DELETE FROM `order` WHERE id = '{}'".format(order_id)
+#         result = cur.execute(del_query)
+#         conn.commit()
 
-        if result > 0:
-            return make_response({'status': 1, 'message': 'Request successful'}, 200)
+#         if result > 0:
+#             return make_response({'status': 1, 'message': 'Request successful'}, 200)
 
-        return make_response({'status': 1, 'message': 'Order not found'}, 200)
+#         return make_response({'status': 1, 'message': 'Order not found'}, 200)
 
-    else:
-        return make_response({'status': 0, 'message': 'Must be logged in to complete this request'}, 401)
+#     else:
+#         return make_response({'status': 0, 'message': 'Must be logged in to complete this request'}, 401)

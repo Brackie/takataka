@@ -4,7 +4,7 @@ import jwt
 from datetime import datetime, timedelta
 
 
-bp = Blueprint('client', __name__, url_prefix='/client')
+bp = Blueprint('user', __name__, url_prefix='/user')
 
 
 @bp.route('register', methods=['POST'])
@@ -14,12 +14,12 @@ def register():
 
 	request_data = request.get_json()
 
-	if helper.user_exists(request_data["email"], "client"):
+	if helper.user_exists(request_data["email"], "user"):
 		return make_response({'status': 0, 'message': 'Email already in use'}, 409)
 
-	query = '''INSERT INTO client(client_id, full_name, email, phone_number, address, pwd) 
-	VALUES (UUID_TO_BIN(UUID()), '{}', '{}', '{}', '{}', '{}')'''.format(request_data['full_name'], 
-	request_data['email'], request_data['phone_number'], request_data['address'], helper.string_hash(request_data['pwd']))
+	query = '''INSERT INTO user(username, email, phone, address, password) 
+	VALUES ('{}', '{}', '{}', '{}', '{}')'''.format(request_data['username'], 
+	request_data['email'], request_data['phone'], request_data['address'], helper.string_hash(request_data['password']))
 
 	conn = db.get_db()
 	cur = conn.cursor()
@@ -39,8 +39,8 @@ def login():
 
 	request_data = request.get_json()
 
-	query = '''SELECT BIN_TO_UUID(client_id) client_id, full_name, email, phone_number, address FROM client 
-	WHERE `email` = '{}' AND `pwd` = '{}' LIMIT 1'''.format(request_data['email'], helper.string_hash(request_data['pwd']))
+	query = '''SELECT id, username, email, phone, address FROM user 
+	WHERE `email` = '{}' AND `password` = '{}' LIMIT 1'''.format(request_data['email'], helper.string_hash(request_data['password']))
 
 	cur = db.get_db().cursor()
 	cur.execute(query)
@@ -49,11 +49,11 @@ def login():
 	if not result:
 		return make_response({'status': 0, 'message': 'Incorrect email or password'}, 404)
 
-	user_id = result['client_id']
-	del result['client_id']
+	user_id = result['id']
+	del result['id']
 	expiration = datetime.now() + timedelta(days=10)
 	token = jwt.encode(
-		{'exp': expiration, 'typ': 'client', 'sub': user_id}, 
+		{'exp': expiration, 'typ': 'user', 'sub': user_id}, 
 		current_app.config['SCRT'], 
 		algorithm='HS256'
 	).decode('utf-8') 
@@ -65,10 +65,10 @@ def login():
 @bp.route('profile', methods=['GET'])
 def get_profile():
 	token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
-	if not token or token['typ'] != 'client':
+	if not token or token['typ'] != 'user':
 		return make_response({'status': 0, 'message': 'Please login first!'}, 401)
 
-	query = f"SELECT full_name, email, phone_number, address FROM client WHERE `client_id` = UUID_TO_BIN('{token['sub']}') LIMIT 1"
+	query = f"SELECT username, email, phone, address FROM user WHERE `id` = '{token['sub']}'LIMIT 1"
 
 	cur = db.get_db().cursor()
 	cur.execute(query)
@@ -82,7 +82,7 @@ def get_profile():
 @bp.route('edit', methods=['PATCH'])
 def edit_profile():
 	token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
-	if not token or token['typ'] != 'client':
+	if not token or token['typ'] != 'user':
 		return make_response({'status': 0, 'message': 'Please login first'}, 401)
 
 	if request.content_type != 'application/json':
@@ -90,8 +90,8 @@ def edit_profile():
 
 	request_data = request.get_json()
 
-	query = '''UPDATE client SET email = '{}', phone_number = '{}', address = '{}' WHERE 
-	client_id = UUID_TO_BIN('{}')'''.format(request_data["email"], request_data["phone_number"], 
+	query = '''UPDATE user SET email = '{}', phone = '{}', address = '{}' WHERE 
+	id = UUID_TO_BIN('{}')'''.format(request_data["email"], request_data["phone"], 
 	request_data["address"], token['sub'])
 
 	conn = db.get_db()
