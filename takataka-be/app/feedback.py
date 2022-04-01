@@ -5,7 +5,11 @@ from datetime import datetime, timedelta
 
 
 bp = Blueprint('announcements', __name__, url_prefix='/announcements')
+<<<<<<< Updated upstream
 
+=======
+ 
+>>>>>>> Stashed changes
 
 @bp.route('upload', methods=['POST'])
 def upload_announcements():	
