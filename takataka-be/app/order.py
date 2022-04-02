@@ -9,24 +9,21 @@ bp = Blueprint('orders', __name__, url_prefix='/orders')
 
 @bp.route('upload', methods=['POST'])
 def upload_order():	
-    if request.content_type != 'application/json':
-        return make_response({'status': 0, 'message': 'Bad Request'}, 401)
-
     token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
-    if not token or token['typ'] != 'user':
+    if not token:
         return make_response({'status': 0, 'message': 'Please login first!'}, 401)
 
+    if request.content_type != 'application/json':
+        return make_response({'status': 0, 'message': 'Bad Request'}, 400)
+
     form_data = request.get_json()
-
-    conn = db.get_db()
-    cur = conn.cursor()
-
-    cur.execute("SELECT id")
-    order_id = cur.fetchone()["id"]
 
     query = '''INSERT INTO `orders` (user_id, number, description, credit, debit, balance) 
         VALUES ('{}', '{}', '{}', '{}', '{}', '{}')'''.format(token['sub'], form_data['number'], 
         form_data['description'], form_data['credit'], form_data['debit'], form_data['balance'])
+
+    conn = db.get_db()
+    cur = conn.cursor()
     result = cur.execute(query)
     conn.commit()
 
@@ -39,35 +36,37 @@ def upload_order():
 @bp.route('all', methods=['GET'])
 def get_orders():
     token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
-    if token:
-        conn = db.get_db()
-        cur = conn.cursor()
-        query = '''SELECT id, number, description, credit, debit, balance ordered_at FROM `orders` ORDER BY ordered_at DESC'''
-        cur.execute(query)
-        conn.commit()
-        result = cur.fetchall()
-        if not result:
-            return make_response({'status': 0, 'message': 'No orders found'}, 404)
-        return make_response({'status': 1, 'message': 'Request successful', 'data': result}, 200)
-    else:
+    if not token:
         return make_response({'status': 0, 'message': 'Must be logged in to complete this request'}, 401)
+
+    conn = db.get_db()
+    cur = conn.cursor()
+    query = '''SELECT id, number, description, credit, debit, balance FROM `orders` ORDER BY id DESC'''
+    cur.execute(query)
+    conn.commit()
+    result = cur.fetchall()
+
+    if not result:
+        return make_response({'status': 0, 'message': 'No orders found'}, 404)
+
+    return make_response({'status': 1, 'message': 'Request successful', 'data': result}, 200)
 
 
 @bp.route('view/<id>', methods=['GET'])
 def view_order(id):
     token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
-    if token:
-        conn = db.get_db()
-        cur = conn.cursor()
-        query = '''SELECT  id,number, description, credit, debit ordered_at FROM `orders` WHERE id = '{}' ORDER BY ordered_at DESC LIMIT 1'''.format(id)
-        cur.execute(query)
-        conn.commit()
-        result = cur.fetchone()
-        if not result:
-            return make_response({'status': 0, 'message': 'Order not found'}, 404)
-        return make_response({'status': 1, 'message': 'Request successful', 'data': result}, 200)
-    else:
+    if not token:
         return make_response({'status': 0, 'message': 'Must be logged in to complete this request'}, 401)
+
+    conn = db.get_db()
+    cur = conn.cursor()
+    query = '''SELECT  id,number, description, credit, debit ordered_at FROM `orders` WHERE id = '{}' ORDER BY ordered_at DESC LIMIT 1'''.format(id)
+    cur.execute(query)
+    conn.commit()
+    result = cur.fetchone()
+    if not result:
+        return make_response({'status': 0, 'message': 'Order not found'}, 404)
+    return make_response({'status': 1, 'message': 'Request successful', 'data': result}, 200)
 
 
 # @bp.route('update/<id>', methods=['PATCH'])

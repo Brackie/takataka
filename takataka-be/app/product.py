@@ -35,19 +35,15 @@ bp = Blueprint('product', __name__, url_prefix='/product')
 
 @bp.route('all', methods=['GET'])
 def get_products():
-    token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
-    if token:
-        conn = db.get_db()
-        cur = conn.cursor()
-        query = '''SELECT id, name, category, price, quantity, description FROM product ORDER BY id DESC'''
-        cur.execute(query)
-        conn.commit()
-        result = cur.fetchall()
-        if not result:
-            return make_response({'status': 0, 'message': 'No products found'}, 404)
-        return make_response({'status': 1, 'message': 'Request successful', 'data': result}, 200)
-    else:
-        return make_response({'status': 0, 'message': 'Must be logged in to complete this request'}, 401)
+    conn = db.get_db()
+    cur = conn.cursor()
+    query = '''SELECT id, name, category, price, quantity, description FROM product ORDER BY id DESC'''
+    cur.execute(query)
+    conn.commit()
+    result = cur.fetchall()
+    if not result:
+        return make_response({'status': 0, 'message': 'No products found'}, 404)
+    return make_response({'status': 1, 'message': 'Request successful', 'data': result}, 200)
 
 
 @bp.route('view/<id>', methods=['GET'])
