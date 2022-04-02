@@ -14,15 +14,54 @@
     <div class="auth">
         <h1>Login</h1>
         <div class="dialog">
-            <form action="">
+            <form id="login-form">
                 <h2>welcome back</h2>
-                <input type="text" placeholder="Your userame"><br>
-                <input type="password" placeholder="Your password"><br>
-                <button>Login</button>
+                <input type="email" id="login-email" placeholder="Your email"><br>
+                <input type="password" id="login-password" placeholder="Your password"><br>
+                <button type="submit">Login</button>
             </form>
         </div>
     </div>
-    <script type="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#login-form").on('submit', function(event){
+                event.preventDefault();
+                const email = $("#login-email").val();
+                const password = $("#login-password").val();
+                login(email, password);
+            });
+
+            function login(email, password) {
+                var settings = {
+                    "url": "http://127.0.0.1:5000/user/login",
+                    "method": "POST",
+                    "timeout": 5000,
+                    "headers": {
+                        "Content-Type": "application/json",
+                    },
+                    "data": JSON.stringify({
+                        "email": email,
+                        "password": password
+                    }),
+                    success: function(res){
+                        alert(res.message);
+                        if (res.status === 1){
+                            localStorage.setItem("token", res.token);
+                            localStorage.setItem("user_details", res.user_details);
+                            window.location.assign("index.html");
+                        }
+                    },
+                    error: function(xhr, status, error){
+                        var errorMessage = xhr.status + ': ' + xhr.statusText
+                        alert('Error - ' + errorMessage);
+                    },
+                };
+                $.ajax(settings);
+            }
+        });
+    </script>
 </body>
 
 </html>

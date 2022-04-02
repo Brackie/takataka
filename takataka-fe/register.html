@@ -14,16 +14,66 @@
     <div class="auth">
         <h1>Sign Up</h1>
         <div class="dialog">
-            <form action="">
-                <input type="text" placeholder="Your userame"><br>
-                <input type="email" placeholder="Your email"><br>
-                <input type="password" placeholder="Your password"><br>
-                <input type="password" placeholder="Your password"><br>
-                <button>Sign Up</button>
+            <form id="register-form">
+                <input type="text" id="register-username" placeholder="Your userame" required><br>
+                <input type="email" id="register-email" placeholder="Your email" required><br>
+                <input type="phone" id="register-phone" placeholder="Your phone" required><br>
+                <input type="text" id="register-address" placeholder="Your address" required><br>
+                <input type="password" id="register-password" placeholder="Your password" required><br>
+                <input type="password" id="confirm-password" placeholder="Confirm password" required><br>
+                <button type="submit">Sign Up</button>
             </form>
         </div>
     </div>
-    <script type="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#register-form").on('submit', function(event){
+                event.preventDefault();
+                const username = $("#register-username").val();
+                const email = $("#register-email").val();
+                const phone = $("#register-phone").val();
+                const address = $("#register-address").val();
+                const password = $("#register-password").val();
+                const confirm = $("#confirm-password").val();
+
+                if (String(confirm) !== String(password)) {
+                    alert("Passwords don't match");
+                    return;
+                }
+
+                register(username, email, phone, address, password);
+            });
+
+            function register(username, email, phone, address, password) {
+                var settings = {
+                    "url": "http://127.0.0.1:5000/user/register",
+                    "method": "POST",
+                    "timeout": 5000,
+                    "headers": {
+                        "Content-Type": "application/json",
+                    },
+                    "data": JSON.stringify({
+                        "username": username,
+                        "email": email,
+                        "phone": phone,
+                        "address": address,
+                        "password": password
+                    }),
+                    success: function(res){
+                        alert(res.message);
+                        if (res.status === 1) window.location.assign("login.html");
+                    },
+                    error: function(xhr, status, error){
+                        var errorMessage = xhr.status + ': ' + xhr.statusText
+                        alert('Error - ' + errorMessage);
+                    },
+                };
+
+                $.ajax(settings);
+            }
+        });
+    </script>
 </body>
 
 </html>

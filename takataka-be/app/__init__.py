@@ -22,7 +22,7 @@ def create_app(test_config=None):
     app.register_blueprint(order.bp)
     app.register_blueprint(feedback.bp)
 
-    # CORS(app)
+    CORS(app)
     
     return app
 
