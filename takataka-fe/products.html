@@ -32,39 +32,97 @@
             <div class="row">
                 <div class="col-30">
                     <h2>Products</h2>
-                    <div class="product">
-                        <img src="images/logo-bg.png">
-                        <p>Description</p>
-                    </div>
-                    <div class="product">
-                        <img src="images/logo-bg.png">
-                        <p>Description</p>
-                    </div>
-                    <div class="product">
-                        <img src="images/logo-bg.png">
-                        <p>Description</p>
+                    <div id="products">
                     </div>
                 </div>
                 <div class="col-30"></div>
                 <div class="col-30">
                     <h2>Shortlisted Products</h2>
-                    <div class="product">
-                        <img src="images/logo-bg.png">
-                        <p>Description</p>
+                    <div id="shortlist">
                     </div>
-                    <div class="product">
-                        <img src="images/logo-bg.png">
-                        <p>Description</p>
-                    </div>
-                    <div class="product">
-                        <img src="images/logo-bg.png">
-                        <p>Description</p>
-                    </div>
+                    <button style="float: right;">Submit</button>
                 </div>
             </div>
         </div>
     </div>
-    <script type="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            const token = localStorage.getItem("token");
+            if (token) fetchOrders(token);
+
+            const shortlisted = JSON.parse(localStorage.getItem("shortlisted"));
+            if (shortlisted) populateCart(shortlisted);
+            else $("#shortlist").append(`No shortlisted items`);
+
+            let g_products = [];
+
+            function fetchOrders(token) {
+                var settings = {
+                    "url": "http://127.0.0.1:5000/product/all",
+                    "method": "GET",
+                    "timeout": 5000,
+                    "headers": {
+                        "Authorization": "Bearer " + token,
+                    },
+                    success: function(res){
+                        if (res.status === 1){
+                            g_products = res.data;
+                            let products = ``;
+                            for (var i = 0; i < res.data.length; i++) {
+                                const prod = res.data[i];
+                                products += `
+                                    <div class="product">
+                                        <img src="images/logo-bg.png">
+                                        <p>
+                                            <strong>${prod.name}</strong><br>
+                                            <span>Ksh. ${prod.price}</span><br>
+                                            ${prod.description}
+                                        </p>
+                                        <button onclick="shortlist('${prod.id}')">Shortlist</button>
+                                    </div>
+                                `;
+                            }
+                            $("#products").append(products);
+                        }
+                    },
+                    error: function(xhr, status, error){
+                        var errorMessage = xhr.status + ': ' + xhr.statusText
+                        $("#products").append('<p style="text-align: center;">No products found</p>');
+                        console.log(error)
+                    },
+                };
+                $.ajax(settings);
+            }
+
+            function shortlist(id) {
+                e.preventDefault();
+                const product = g_products.filter(p => p.id === id)[0];
+                console.log(product);
+                const shortlisted = localStorage.getItem("shortlisted") ? JSON.parse(localStorage.getItem("shortlisted")) : [];
+                shortlisted.append(product);
+                localStorage.setItem("shortlisted", JSON.stringify(shortlisted));
+                populateCart(shortlisted);
+            }
+
+            function populateCart(items){
+                for (var i = items.length - 1; i >= 0; i--) {
+                    const item = items[i];
+                    let items_div = `
+                        <div class="product">
+                            <img src="images/logo-bg.png">
+                            <p>
+                                <strong>${item.name}</strong><br>
+                                <span>Ksh. ${item.price}</span><br>
+                                ${item.description}
+                            </p>
+                        </div>
+                    `;
+                }
+                $("#shortlist").append(items_div);
+            }
+        });
+    </script>
 </body>
 
 </html>

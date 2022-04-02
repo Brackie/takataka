@@ -48,13 +48,14 @@
                         alert(res.message);
                         if (res.status === 1){
                             localStorage.setItem("token", res.token);
-                            localStorage.setItem("user_details", res.user_details);
+                            localStorage.setItem("user_details", JSON.stringify(res.user_details));
                             window.location.assign("index.html");
                         }
                     },
                     error: function(xhr, status, error){
                         var errorMessage = xhr.status + ': ' + xhr.statusText
                         alert('Error - ' + errorMessage);
+                        console.log(error)
                     },
                 };
                 $.ajax(settings);

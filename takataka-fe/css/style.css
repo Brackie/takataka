@@ -30,7 +30,7 @@ form button{
     margin: 10px auto;
     border: 0;  
     border-radius: 5px;
-    padding: 5px 2px;
+    padding: 10px 2px;
     color: #fff;
     background-color: #EF7D00;
 }
@@ -142,6 +142,10 @@ input{
     margin: auto;
     border-radius: 5px;
     margin-bottom: 5px;
+}
+.product img{
+    width: 120px;
+    height: auto;
 }
 .product p{
     width: 100%;

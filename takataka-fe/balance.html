@@ -29,10 +29,39 @@
     <div class="container">
         <h1>My Balance</h1>
         <div class="balance">
-            <h2>Your current balance is: <span>100</span></h2>
+            <h2>Your current balance is: Ksh. <span id="balance"></span></h2>
         </div>
     </div>
-    <script type="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            const token = localStorage.getItem("token");
+            if (token) fetchBalance(token);
+
+            function fetchBalance(token) {
+                var settings = {
+                    "url": "http://127.0.0.1:5000/user/balance",
+                    "method": "GET",
+                    "timeout": 5000,
+                    "headers": {
+                        "Authorization": "Bearer " + token,
+                    },
+                    success: function(res){
+                        if (res.status === 1){
+                            const balance = parseFloat(res.data.debit) - parseFloat(res.data.credit);
+                            $("#balance").text(String(balance) === "NaN" ? "0.0" : String(balance));
+                        }
+                    },
+                    error: function(xhr, status, error){
+                        var errorMessage = xhr.status + ': ' + xhr.statusText
+                        alert('Error - ' + errorMessage);
+                        console.log(error)
+                    },
+                };
+                $.ajax(settings);
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -39,19 +39,53 @@
                         <th>Balance</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>number</td>
-                        <td>description</td>
-                        <td>credit</td>
-                        <td>debit</td>
-                        <td>balance</td>
-                    </tr>
+                <tbody id="reports">
                 </tbody>
             </table>
         </div>
     </div>
-    <script type="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            const token = localStorage.getItem("token");
+            if (token) fetchOrders(token);
+
+            function fetchOrders(token) {
+                var settings = {
+                    "url": "http://127.0.0.1:5000/orders/all",
+                    "method": "GET",
+                    "timeout": 5000,
+                    "headers": {
+                        "Authorization": "Bearer " + token,
+                    },
+                    success: function(res){
+                        if (res.status === 1){
+                            let reports = ``;
+                            for (var i = res.data.length - 1; i >= 0; i--) {
+                                const rep = res.data[i];
+                                reports += `
+                                    <tr>
+                                        <td>${rep.number}</td>
+                                        <td>${rep.description}</td>
+                                        <td>${rep.credit}</td>
+                                        <td>${rep.debit}</td>
+                                        <td>${rep.balance}</td>
+                                    </tr>
+                                `;
+                            }
+                            $("#reports").append(reports);
+                        }
+                    },
+                    error: function(xhr, status, error){
+                        var errorMessage = xhr.status + ': ' + xhr.statusText
+                        $("#reports").append('<p style="text-align: center;">No reports found</p>');
+                        console.log(error)
+                    },
+                };
+                $.ajax(settings);
+            }
+        });
+    </script>
 </body>
 
 </html>
