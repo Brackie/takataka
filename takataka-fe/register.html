@@ -14,11 +14,8 @@
     <div class="auth">
         <h1>Sign Up</h1>
         <div class="dialog">
-<<<<<<< Updated upstream
             <form id="register-form">
-=======
             <form action="">
->>>>>>> Stashed changes
                 <input type="text" id="register-username" placeholder="Your userame" required><br>
                 <input type="email" id="register-email" placeholder="Your email" required><br>
                 <input type="password" id="register-password" placeholder="Your password" required><br>
@@ -27,7 +24,6 @@
             </form>
         </div>
     </div>
-<<<<<<< Updated upstream
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script type="text/javascript">
@@ -77,57 +73,6 @@
                 $.ajax(settings);
             }
         });
-=======
-    <script type="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script type="text/javascript">
-        $("#register-form").submit(function(event){
-            event.preventDefault();
-
-            const username = $("register-username").val();
-            const email = $("register-email").val();
-            const password = $("register-password").val();
-            const confirm = $("confirm-password").val();
-
-            if (String(confirm) === String(password)){
-                loginRequest(username, email, password);
-            }
-            else{
-                alert("Passwords don't match");
-            }
-        });
-
-        function registerRequest(username, email, password){
-            let myHeaders = new Headers();
-            myHeaders.append("Accept", "application/json");
-            myHeaders.append("Content-Type", "application/json");
-
-            var requestBody = JSON.stringify({
-                "username": username,
-                "email": email,
-                "password": password
-            });
-
-            var requestOptions = {
-                method: 'POST',
-                headers: myHeaders,
-                body: requestBody,
-                redirect: 'follow'
-            };
-
-            fetch("http://127.0.0.1:5000/user/register", requestOptions)
-                .then(response => response.json())
-                .then(json => {
-                    if(json.success == 1){
-                        // ask user to login
-                        alert(json.message + ". You can now log in!", json.success);
-                        window.location.assign("login.html")
-                    } else {
-                        alert(json.message, json.success);
-                    }
-                })
-                .catch(error => console.log('error', error));
-        }
->>>>>>> Stashed changes
     </script>
 </body>
 
