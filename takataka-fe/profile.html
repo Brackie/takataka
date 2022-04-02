@@ -29,22 +29,69 @@
     <div class="container">
         <h1>My Profile</h1>
         <div class="profile">
-            <form action="">
+            <form id="edit-profile">
                 <img src="images/profile.png" alt="Profile">
                 <h2>Details</h2>
-                <input type="text" placeholder="Your userame"><br>
-                <input type="text" placeholder="Your email"><br>
-                <input type="text" placeholder="Your phone number"><br>
-                <input type="text" placeholder="Your address"><br>
+                <input type="username" id="edit-username" placeholder="Your userame" required><br>
+                <input type="email" id="edit-email" placeholder="Your email"  required ><br>
+                <input type="phone" id="edit-phone" placeholder= "your phone number"  required ><br>
+                <input type="address" id="edit-address" placeholder="Your address"  required ><br>
                 <h2>Credentials</h2>
-                <input type="text" placeholder="Your current password"><br>
-                <input type="text" placeholder="Your new password"><br>
-                <input type="text" placeholder="Confirm your new password">
+                <input type="password" id="password" placeholder="Your current password"><br>
+                <input type="password" id="new-pass" placeholder="Your new password"><br>
+                <input type="password" id="new-confirm" placeholder="Confirm your new password">
                 <button type="submit">Update</button>
             </form>
         </div>
     </div>
-    <script type="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            //get-profile
+            $("#edit-profile").on('submit', function(event){
+                event.preventDefault();
+                const username = $("#edit-username").val();
+                const email = $("#edit-email").val();
+                const phone = $("#edit-phone").val();
+                const address = $("#edit-address").val();
+                
+                // if (String(confirm) !== String(password)) {
+                //     alert("Passwords don't match");
+                //     return;
+                // }
+
+                edit_profile(username, email, phone, address);
+            });
+
+            function edit_profile(username, email, phone, address) {
+                var settings = {
+                    "url": "http://127.0.0.1:5000/user/edit/", 
+                    "method": "PATCH",
+                    "timeout": 5000,
+                    "headers": {
+                        "Content-Type": "application/json",
+                    },
+                    "data": JSON.stringify({
+                        "username": username,
+                        "email": email,
+                        "phone": phone,
+                        "address": address,
+                    }),
+                    success: function(res){
+                        alert(res.message);
+                        if (res.status === 1) window.location.assign("profile.html");
+                    },
+                    error: function(xhr, status, error){
+                        var errorMessage = xhr.status + ': ' + xhr.statusText
+                        alert('Error - ' + errorMessage);
+                    },
+                };
+
+                $.ajax(settings);
+            }
+        });
+    </script>
 </body>
 
 </html>

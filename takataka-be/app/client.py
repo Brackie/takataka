@@ -91,7 +91,7 @@ def edit_profile():
 	request_data = request.get_json()
 
 	query = '''UPDATE user SET email = '{}', phone = '{}', address = '{}' WHERE 
-	id = UUID_TO_BIN('{}')'''.format(request_data["email"], request_data["phone"], 
+	id = ('{}')'''.format(request_data["email"], request_data["phone"], 
 	request_data["address"], token['sub'])
 
 	conn = db.get_db()
