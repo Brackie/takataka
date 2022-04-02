@@ -9,5 +9,6 @@ ENV/
 env.bak/
 venv.bak/
 
-*/config.py
-*/__pycache__/*
+takataka-be/instance/config.py
+takataka-be/config.py
+takataka-be/app/__pycache__/*
