@@ -48,7 +48,12 @@
     <script type="text/javascript">
         $(document).ready(function() {
             const token = localStorage.getItem("token");
-            if (token) fetchOrders(token);
+            if (!token) {
+                alert("You need to log in for this page!");
+                window.location.assign("login.html");
+            } 
+            
+            fetchOrders(token);
 
             function fetchOrders(token) {
                 var settings = {

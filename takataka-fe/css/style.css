@@ -11,8 +11,11 @@ table{
     width: 90%;
     margin: auto;
 }
-table tr:nth-child(odd){
+table tr{
     background-color: #fff;
+}
+table tr:nth-child(even){
+    background-color: #cecece;
 }
 form{
     width: 60%;

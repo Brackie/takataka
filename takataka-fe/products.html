@@ -40,7 +40,7 @@
                     <h2>Shortlisted Products</h2>
                     <div id="shortlist">
                     </div>
-                    <button style="float: right;">Submit</button>
+                    <button style="float: right; margin: 10px;" id="submit-order">Submit</button>
                 </div>
             </div>
         </div>
@@ -48,16 +48,23 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            const token = localStorage.getItem("token");
-            if (token) fetchOrders(token);
+            fetchProducts();
 
             const shortlisted = JSON.parse(localStorage.getItem("shortlisted"));
             if (shortlisted) populateCart(shortlisted);
             else $("#shortlist").append(`No shortlisted items`);
 
-            let g_products = [];
+            $("#submit-order").on('click', function(){
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    alert("You need to log in for this page!");
+                    window.location.assign("login.html");
+                } 
+                submitOrder(token);
+            });
 
-            function fetchOrders(token) {
+            let g_products = null;
+            function fetchProducts() {
                 var settings = {
                     "url": "http://127.0.0.1:5000/product/all",
                     "method": "GET",
@@ -68,6 +75,7 @@
                     success: function(res){
                         if (res.status === 1){
                             g_products = res.data;
+                            $("#products").html("");
                             let products = ``;
                             for (var i = 0; i < res.data.length; i++) {
                                 const prod = res.data[i];
@@ -79,7 +87,7 @@
                                             <span>Ksh. ${prod.price}</span><br>
                                             ${prod.description}
                                         </p>
-                                        <button onclick="shortlist('${prod.id}')">Shortlist</button>
+                                        <button class="add-to-cart" id="prod-${prod.id}">Shortlist</button>
                                     </div>
                                 `;
                             }
@@ -89,26 +97,51 @@
                     error: function(xhr, status, error){
                         var errorMessage = xhr.status + ': ' + xhr.statusText
                         $("#products").append('<p style="text-align: center;">No products found</p>');
-                        console.log(error)
+                        console.log(error);
                     },
                 };
                 $.ajax(settings);
             }
 
-            function shortlist(id) {
+            $(document).on('click', ".add-to-cart", function(e){
                 e.preventDefault();
-                const product = g_products.filter(p => p.id === id)[0];
-                console.log(product);
-                const shortlisted = localStorage.getItem("shortlisted") ? JSON.parse(localStorage.getItem("shortlisted")) : [];
-                shortlisted.append(product);
-                localStorage.setItem("shortlisted", JSON.stringify(shortlisted));
-                populateCart(shortlisted);
+                const id = $(this).attr('id').split("-")[1];
+                shortList(id);
+            });
+
+            function shortList(id){
+                if (g_products !== null){
+                    const product = g_products.filter(p => p.id === parseInt(id))[0];
+                    const shortlisted = localStorage.getItem("shortlisted") ? JSON.parse(localStorage.getItem("shortlisted")) : [];
+                    shortlisted.push(product);
+                    localStorage.setItem("shortlisted", JSON.stringify(shortlisted));
+                    populateCart(shortlisted);
+                }
+            }
+
+            $(document).on('click', ".remove-from-cart", function(e){
+                e.preventDefault();
+                const id = $(this).attr('id').split("-")[2];
+                console.log(id);
+                deShortList(id);
+            });
+
+            function deShortList(id){
+                if (g_products !== null){
+                    let shortlisted = localStorage.getItem("shortlisted") ? JSON.parse(localStorage.getItem("shortlisted")) : [];
+                    shortlisted = shortlisted.filter(p => p.id !== parseInt(id));
+                    console.log(shortlisted);
+                    localStorage.setItem("shortlisted", JSON.stringify(shortlisted));
+                    populateCart(shortlisted);
+                }
             }
 
             function populateCart(items){
+                $("#shortlist").html("");
+                let items_div = ``;
                 for (var i = items.length - 1; i >= 0; i--) {
                     const item = items[i];
-                    let items_div = `
+                    items_div += `
                         <div class="product">
                             <img src="images/logo-bg.png">
                             <p>
@@ -116,10 +149,59 @@
                                 <span>Ksh. ${item.price}</span><br>
                                 ${item.description}
                             </p>
+                            <button class="remove-from-cart" id="remove-item-${item.id}">Remove</button>
                         </div>
                     `;
                 }
                 $("#shortlist").append(items_div);
+            }
+
+            function submitOrder(token) {
+                let shortlisted = localStorage.getItem("shortlisted") ? JSON.parse(localStorage.getItem("shortlisted")) : [];
+                let description = "";
+                shortlisted.forEach(item => {
+                    description += `
+                        <strong>${item.name}</strong><br>
+                        <span>Ksh. ${item.price}</span><br>
+                        ${item.description}<br>
+                    `;
+                });
+
+                if (shortlisted.length > 0){
+                    var settings = {
+                        "url": "http://127.0.0.1:5000/orders/upload",
+                        "method": "POST",
+                        "timeout": 5000,
+                        "headers": {
+                            "Authorization": "Bearer " + token,
+                            "Content-Type": "application/json",
+                        },
+                        "data": JSON.stringify({
+                            "number": shortlisted.length,
+                            "description": description,
+                            "credit": shortlisted.reduce((total, item) => total + item.price, 0),
+                            "debit": 0.0,
+                            "balance": -parseInt(shortlisted.reduce((total, item) => total + item.price, 0))
+                        }),
+                        success: function(res){
+                            if (res.status === 1){
+                                alert(res.message);
+                                localStorage.setItem("shortlisted", JSON.stringify([]));
+                                window.location.assign("reports.html");
+                            }
+                        },
+                        error: function(xhr, status, error){
+                            console.log(error);
+                            var errorMessage = xhr.status + ': ' + xhr.statusText;
+                            if (String(xhr.status) === "401") window.location.assign("login.html");
+                            else if (String(xhr.status) === "400") alert("Your order was malformed :(");
+                            else alert(errorMessage);
+                        },
+                    };
+                    $.ajax(settings);
+                } else {
+                    alert("Cart is empty.");
+                }
             }
         });
     </script>
