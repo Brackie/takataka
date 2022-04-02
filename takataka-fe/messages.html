@@ -29,7 +29,7 @@
     <div class="container">
         <h1>Messages</h1>
         <div class="balance">
-            <table>
+            <table >
                 <thead>
                     <tr>
                         <th>Content</th>
@@ -37,12 +37,11 @@
                         <th>Operation</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="get-message">
                     <tr>
                         <td>message content</td>
                         <td>time</td>
                         <td>
-                            <button>view</button>
                             <button>delete</button>
                         </td>
                     </tr>
@@ -50,7 +49,53 @@
             </table>
         </div>
     </div>
-    <script type="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            //get-profile
+            $("#get-message").on('submit', function(event){
+                event.preventDefault();
+                const username = $("#edit-username").val();
+                const email = $("#edit-email").val();
+                const phone = $("#edit-phone").val();
+                const address = $("#edit-address").val();
+                
+                // if (String(confirm) !== String(password)) {
+                //     alert("Passwords don't match");
+                //     return;
+                // }
+
+                edit_profile(username, email, phone, address);
+            });
+
+            function edit_profile(username, email, phone, address) {
+                var settings = {
+                    "url": "http://127.0.0.1:5000/user/edit/", 
+                    "method": "PATCH ",
+                    "timeout": 5000,
+                    "headers": {
+                        "Content-Type": "application/json",
+                    },
+                    "data": JSON.stringify({
+                        "username": username,
+                        "email": email,
+                        "phone": phone,
+                        "address": address,
+                    }),
+                    success: function(res){
+                        alert(res.message);
+                        if (res.status === 1) window.location.assign("profile.html");
+                    },
+                    error: function(xhr, status, error){
+                        var errorMessage = xhr.status + ': ' + xhr.statusText
+                        alert('Error - ' + errorMessage);
+                    },
+                };
+
+                $.ajax(settings);
+            }
+        });
+    </script> 
 </body>
 
 </html>
