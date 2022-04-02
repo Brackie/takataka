@@ -39,7 +39,7 @@ def get_products():
     if token:
         conn = db.get_db()
         cur = conn.cursor()
-        query = '''SELECT id, name, category,price, quatity, description FROM product ORDER BY uploaded_at DESC'''
+        query = '''SELECT id, name, category, price, quantity, description FROM product ORDER BY id DESC'''
         cur.execute(query)
         conn.commit()
         result = cur.fetchall()

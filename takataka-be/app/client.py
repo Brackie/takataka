@@ -105,6 +105,25 @@ def edit_profile():
 	return make_response({'status': 1, 'message': 'Update Successful'}, 200)
 
 
+@bp.route('balance', methods=['GET'])
+def account_balance():
+	token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])
+	if not token or token['typ'] != 'user':
+		return make_response({'status': 0, 'message': 'Please login first'}, 401)
+
+	query = '''SELECT SUM(debit) debit_sum, SUM(credit) credit_sum FROM orders WHERE user_id = {}'''.format(token["sub"])
+
+	conn = db.get_db()
+	cur = conn.cursor()
+	cur.execute(query)
+	result = cur.fetchone()
+
+	if not result:
+		return make_response({'status': 0, 'message': 'Couldn\'t get balance. Try later'}, 500)
+	
+	return make_response({'status': 1, 'message': 'Balance Fetched', 'data': result}, 200)
+
+
 @bp.route('session', methods=['POST'])
 def check_session():
 	token = helper.is_logged_in(request.headers['Authorization'].split(' ')[-1], current_app.config['SCRT'])

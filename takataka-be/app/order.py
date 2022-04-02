@@ -24,23 +24,14 @@ def upload_order():
     cur.execute("SELECT id")
     order_id = cur.fetchone()["id"]
 
-    query = '''INSERT INTO `orders` (id, number, description, credit, debit, balance) VALUES ('{}', '{}', '{}', '{}','{}')'''.format(id, token['sub'], form_data['description'], form_data['order_location'])
+    query = '''INSERT INTO `orders` (user_id, number, description, credit, debit, balance) 
+        VALUES ('{}', '{}', '{}', '{}', '{}', '{}')'''.format(token['sub'], form_data['number'], 
+        form_data['description'], form_data['credit'], form_data['debit'], form_data['balance'])
     result = cur.execute(query)
     conn.commit()
 
     if result < 1:
         return make_response({'status': 0, 'message': "Server Error. Couldn't save order"}, 500)
-
-    items = form_data["items"]
-    if items is not None:
-        for item in items:
-            if not helper.product_exists(pid=item['product_id']):
-                return make_response({'status': 1, 'message': 'Product not found', "product": item}, 404)	
-
-            query = '''INSERT INTO order_item (order_item_id, order_id, product_id, item_quantity) VALUES 
-            (, '{}','{}', {})'''.format(order_id, item['id'], item['quantity'])
-            if cur.execute(query) < 1:
-                return make_response({'status': 0, 'message': "Server Error. Couldn't save order"}, 500)
 
     return make_response({'status': 1, 'message': 'Order Registered'}, 200)		
 
