@@ -18,7 +18,7 @@
                 <li><a href="index.html">Home</a></li>
                 <li><a href="profile.html">My Profile</a></li>
                 <li><a href="balance.html">My Balance</a></li>
-                <li><a href="reports.html">Reports</a></li>
+                <li><a href="reports.html">Orders</a></li>
                 <li><a href="products.html">Products</a></li>
                 <li><a href="messages.html">Messages</a></li>
                 <li><a href="login.html">Login</a></li>
@@ -38,60 +38,82 @@
                     </tr>
                 </thead>
                 <tbody id="get-message">
-                    <tr>
-                        <td>message content</td>
-                        <td>time</td>
-                        <td>
-                            <button>delete</button>
-                        </td>
-                    </tr>
+
                 </tbody>
             </table>
         </div>
     </div>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            //get-profile
-            $("#get-message").on('submit', function(event){
-                event.preventDefault();
-                const username = $("#edit-username").val();
-                const email = $("#edit-email").val();
-                const phone = $("#edit-phone").val();
-                const address = $("#edit-address").val();
-                
-                // if (String(confirm) !== String(password)) {
-                //     alert("Passwords don't match");
-                //     return;
-                // }
+            const token = localStorage.getItem("token");
+            if (token) fetchOrders(token);
+            if (token) deleteMessages(token);
 
-                edit_profile(username, email, phone, address);
-            });
-
-            function edit_profile(username, email, phone, address) {
+            function fetchOrders(token) {
                 var settings = {
-                    "url": "http://127.0.0.1:5000/user/edit/", 
-                    "method": "PATCH ",
+                    "url": "http://127.0.0.1:5000/announcements/all",
+                    "method": "GET",
                     "timeout": 5000,
                     "headers": {
+                        "Authorization": "Bearer " + token,
+                    },
+                    success: function(res){
+                        if (res.status === 1){
+                            let messages = ``;
+                            for (var i = res.data.length - 1; i >= 0; i--) {
+                                const message = res.data[i];
+                                messages += `                    
+                                    <tr>
+                                        <td>${message.content}</td>
+                                        <td>${message.time}</td>
+                                        <td>
+                                            <button onclick="DeleteMessages()">delete</button>
+                                        </td>
+                                    </tr>
+                                
+                                `;
+                            }
+                            $("#get-message").append(messages);
+                        }
+                    },
+                    error: function(xhr, status, error){
+                        var errorMessage = xhr.status + ': ' + xhr.statusText
+                        $("#get-message").append('<p style="text-align: center;">No Messages found</p>');
+                        console.log(error)
+                    },
+                };
+
+            $("#get-message").on('submit', function(event){
+                event.preventDefault();
+            });
+
+            function DeleteMessages(token) {
+                var settings = {
+                    "url": "http://127.0.0.1:5000/announcements/all",
+                    "method": "PATCH",
+                    "timeout": 5000,
+                   "headers": {
                         "Content-Type": "application/json",
                     },
+
+                     
+                    
                     "data": JSON.stringify({
-                        "username": username,
-                        "email": email,
-                        "phone": phone,
-                        "address": address,
+                        "status": status,
                     }),
                     success: function(res){
                         alert(res.message);
-                        if (res.status === 1) window.location.assign("profile.html");
+                        if (res.status === 1) window.location.assign("messages.html");
                     },
                     error: function(xhr, status, error){
                         var errorMessage = xhr.status + ': ' + xhr.statusText
                         alert('Error - ' + errorMessage);
                     },
                 };
-
+                $.ajax(settings);
+            }
                 $.ajax(settings);
             }
         });
