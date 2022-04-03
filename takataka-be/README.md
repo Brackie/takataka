@@ -1,4 +1,4 @@
-# kenso_backend
+# takataka_backend
 A water pump sales backend done in Flask (https://flask.palletsprojects.com/en/2.0.x/quickstart/#)
 
 
@@ -8,7 +8,7 @@ A water pump sales backend done in Flask (https://flask.palletsprojects.com/en/2
 - MySql installation (https://www.mysql.com/downloads/)
 
 ### Python installations
-> cd current_directory (./ -> kenso)
+> cd current_directory (./ -> takataka)
 
 > pip install -r ./requirments.txt
 
@@ -16,12 +16,12 @@ A water pump sales backend done in Flask (https://flask.palletsprojects.com/en/2
 Copy ./config.py.example >> ./config.py
 
 ### Database config
-- Edit ./config.py to desired database values
+- Edit/Create ./instance/config.py to desired database values
 - Refer to ./app/schema.sql for 'db_name'
 
 To initialize tables:
 - Login to mysql console
-> cd current_dir (./ -> kenso)
+> cd current_dir (./ -> takataka)
 
 > mysql -u user_name -p db_name
 
@@ -61,4 +61,4 @@ Once all libraries are installed
 ## Postman Collection
 - Open postman
 - File > Import > Upload files
-- Select collection at ./kenso.postman_collection.json
+- Select collection at ./takataka.postman_collection.json
