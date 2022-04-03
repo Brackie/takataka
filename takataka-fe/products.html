@@ -69,9 +69,6 @@
                     "url": "http://127.0.0.1:5000/product/all",
                     "method": "GET",
                     "timeout": 5000,
-                    "headers": {
-                        "Authorization": "Bearer " + token,
-                    },
                     success: function(res){
                         if (res.status === 1){
                             g_products = res.data;
