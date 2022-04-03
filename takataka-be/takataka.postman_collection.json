@@ -41,7 +41,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"full_name\": \"Braxton Muimi\",\r\n    \"email\": \"muimikieleko@gmail.com\",\r\n    \"phone_number\": \"0713398529\",\r\n    \"pwd\": \"1234567890\"\r\n}",
+					"raw": "{\r\n    \"full_name\": \"\",\r\n    \"email\": \"\",\r\n    \"phone_number\": \"\",\r\n    \"pwd\": \"\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -93,7 +93,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"kimaru.araap.bett@gmail.com\",\r\n    \"password\": \"OnaHuyu\"\r\n}",
+					"raw": "{\r\n    \"email\": \"\",\r\n    \"password\": \"\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -122,7 +122,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"adricoder\",\r\n    \"email\": \"kimaru.araap.bett@gmail.com\",\r\n    \"phone\": \"0796226530\",\r\n    \"address\": \" Pride, Waiyaki Way\",\r\n    \"password\": \"OnaHuyu\"\r\n}",
+					"raw": "{\r\n    \"username\": \"\",\r\n    \"email\": \"\",\r\n    \"phone\": \"\",\r\n    \"address\": \" \",\r\n    \"password\": \"\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -145,22 +145,34 @@
 			"response": []
 		},
 		{
-			"name": "client/profile",
+			"name": "user/profile",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"auth": {
 					"type": "bearer",
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDk2NDA5NTYsInR5cCI6InVzZXIiLCJzdWIiOjJ9.hQfBV3cS-MJyLLq875Yn32s1kN8BHytZoHO8pmgH8iQ",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDk4MTQ2MzgsInR5cCI6InVzZXIiLCJzdWIiOjJ9.ugNcyk5Fmy3eg7Fg5irM8isCiJRyGeCAeGA_s-9kkj0",
 							"type": "string"
 						}
 					]
 				},
 				"method": "GET",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "http://localhost:5000/user/profile?id=2",
+					"raw": "http://localhost:5000/user/profile",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -169,12 +181,45 @@
 					"path": [
 						"user",
 						"profile"
-					],
-					"query": [
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user/edit",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
 						{
-							"key": "id",
-							"value": "2"
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDk4MTQ2MzgsInR5cCI6InVzZXIiLCJzdWIiOjJ9.ugNcyk5Fmy3eg7Fg5irM8isCiJRyGeCAeGA_s-9kkj0",
+							"type": "string"
 						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"\",\r\n    \"phone\": \"\",\r\n    \"address\": \"\",\r\n    \"old_password\": \"\",\r\n    \"new_password\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/user/edit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"user",
+						"edit"
 					]
 				}
 			},
@@ -377,7 +422,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"payment_method\": \"mpesa\",\r\n    \"order_location\": \"Westlands Pride, Waiyaki Way\",\r\n    \"items\": [\r\n        {\r\n            \"product_id\":\"32f3af53-1f96-11ec-8273-48ba4e5806a8\",\r\n            \"quantity\": 1\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n\r\n    \"number\": shortlisted.length,\r\n    \"description\": description,\r\n    \"credit\": shortlisted.reduce((total, item) => total + item.price, 0),\r\n    \"debit\": 0.0,\r\n    \"balance\": -parseInt(shortlisted.reduce((total, item) => total + item.price, 0))\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -565,7 +610,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/announcement/upload?content=luku jitu&time",
+					"raw": "http://localhost:5000/announcement/upload?content=&time",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -578,7 +623,7 @@
 					"query": [
 						{
 							"key": "content",
-							"value": "luku jitu"
+							"value": ""
 						},
 						{
 							"key": "time",
@@ -658,7 +703,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MzM2MTA0NDIsInR5cCI6ImFkbWluIiwic3ViIjoiN2ZkNjEzZjQtMWY2ZS0xMWVjLTgyNzMtNDhiYTRlNTgwNmE4In0.iLSPul4bTBFTVCfkbqxcLUn-Wcgh6Ejgr-ZTYmEJnVo",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDk4MDcwODEsInR5cCI6InVzZXIiLCJzdWIiOjJ9.GJ0byGe7A7vHvNH7UcrPbjvqLhd7liNNzcVwI63hLDU",
 							"type": "string"
 						}
 					]
@@ -675,16 +720,16 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/order/delete/94d9eed8-1f96-11ec-8273-48ba4e5806a8",
+					"raw": "http://localhost:5000/announcements/delete/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "5000",
 					"path": [
-						"order",
+						"announcements",
 						"delete",
-						"94d9eed8-1f96-11ec-8273-48ba4e5806a8"
+						"1"
 					]
 				}
 			},
