@@ -11,4 +11,4 @@ venv.bak/
 
 takataka-be/instance/config.py
 takataka-be/config.py
-takataka-be/app/__pycache__/*
+takataka-be/app/__pycache__/
