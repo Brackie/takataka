@@ -48,10 +48,14 @@
     <script type="text/javascript">
         $(document).ready(function() {
             const token = localStorage.getItem("token");
-            if (token) fetchOrders(token);
-            if (token) deleteMessages(token);
+            if (!token) {
+                alert("You need to log in for this page!");
+                window.location.assign("login.html");
+            } 
 
-            function fetchOrders(token) {
+            fetchMessages();
+
+            function fetchMessages() {
                 var settings = {
                     "url": "http://127.0.0.1:5000/announcements/all",
                     "method": "GET",
@@ -61,6 +65,8 @@
                     },
                     success: function(res){
                         if (res.status === 1){
+                            console.log(res.data);
+                            $("#get-message").html("");
                             let messages = ``;
                             for (var i = res.data.length - 1; i >= 0; i--) {
                                 const message = res.data[i];
@@ -69,51 +75,53 @@
                                         <td>${message.content}</td>
                                         <td>${message.time}</td>
                                         <td>
-                                            <button onclick="DeleteMessages()">delete</button>
+                                            <button class="delete-message" id="message-${message.id}" >delete</button>
                                         </td>
                                     </tr>
-                                
                                 `;
                             }
                             $("#get-message").append(messages);
                         }
                     },
                     error: function(xhr, status, error){
-                        var errorMessage = xhr.status + ': ' + xhr.statusText
-                        $("#get-message").append('<p style="text-align: center;">No Messages found</p>');
-                        console.log(error)
+                        console.log(error);
+                        var errorMessage = xhr.status + ': ' + xhr.statusText;
+                        if (String(xhr.status) === "401") {
+                            alert("You need to log in for this page!");
+                            window.location.assign("login.html");
+                        } else alert(errorMessage);
                     },
                 };
+                $.ajax(settings);
+            }
 
-            $("#get-message").on('submit', function(event){
+            $(document).on("click", ".delete-message", function(event){
                 event.preventDefault();
+                const id = $(this).attr("id").split("-")[1];
+                console.log(id);
+                deleteMessages(id);
             });
-
-            function DeleteMessages(token) {
+            
+            function deleteMessages(id) {
                 var settings = {
-                    "url": "http://127.0.0.1:5000/announcements/all",
-                    "method": "PATCH",
+                    "url": "http://127.0.0.1:5000/announcements/delete/" + id,
+                    "method": "DELETE",
                     "timeout": 5000,
-                   "headers": {
-                        "Content-Type": "application/json",
+                    "headers": {
+                        "Authorization": "Bearer " + token
                     },
-
-                     
-                    
-                    "data": JSON.stringify({
-                        "status": status,
-                    }),
                     success: function(res){
                         alert(res.message);
                         if (res.status === 1) window.location.assign("messages.html");
                     },
                     error: function(xhr, status, error){
-                        var errorMessage = xhr.status + ': ' + xhr.statusText
-                        alert('Error - ' + errorMessage);
+                        console.log(error);
+                        var errorMessage = xhr.status + ': ' + xhr.statusText;
+                        if (String(xhr.status) === "401") window.location.assign("login.html");
+                        else if (String(xhr.status) === "400") alert("Your request was malformed :(");
+                        else alert(errorMessage);
                     },
                 };
-                $.ajax(settings);
-            }
                 $.ajax(settings);
             }
         });

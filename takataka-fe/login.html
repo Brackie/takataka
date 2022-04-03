@@ -53,9 +53,10 @@
                         }
                     },
                     error: function(xhr, status, error){
-                        var errorMessage = xhr.status + ': ' + xhr.statusText
-                        alert('Error - ' + errorMessage);
-                        console.log(error)
+                        console.log(error);
+                        var errorMessage = xhr.status + ': ' + xhr.statusText;
+                        if (String(xhr.status) === "404") alert("Incorrect Email or Password!");
+                        else alert(errorMessage);
                     },
                 };
                 $.ajax(settings);

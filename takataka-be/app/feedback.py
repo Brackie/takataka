@@ -36,7 +36,7 @@ def get_announcementss():
     if token:
         conn = db.get_db()
         cur = conn.cursor()
-        query = '''SELECT id, content, time FROM `announcements` WHERE status = 1 ORDER BY time DESC'''
+        query = '''SELECT id, content, time, status FROM `announcements` WHERE status = 1 ORDER BY time DESC'''
         cur.execute(query)
         conn.commit()
         result = cur.fetchall()
@@ -70,13 +70,9 @@ def delete_announcements(id):
     if not token or token['typ'] != 'user':
         return make_response({'status': 0, 'message': 'Please login first'}, 401)
 
-    if request.content_type != 'application/json':
-        return make_response({'status': 0, 'message': 'Invalid content type'}, 400)
-
     request_data = request.get_json()
 
-    query = '''UPDATE user SET status = 2 WHERE 
-    id = ('{}')'''.format(token['sub'])
+    query = '''UPDATE announcements SET status = 2 WHERE id = {}'''.format(id)
 
     conn = db.get_db()
     cur = conn.cursor()
@@ -84,9 +80,9 @@ def delete_announcements(id):
     conn.commit()
 
     if result < 1:
-        return make_response({'status': 0, 'message': 'Couldn\'t update user details. Try later'}, 500)
+        return make_response({'status': 0, 'message': 'Couldn\'t delete announcement. Try later'}, 500)
     
-    return make_response({'status': 1, 'message': 'Update Successful'}, 200)
+    return make_response({'status': 1, 'message': 'Deleted Successful'}, 200)
 
 
     # if request.content_type != 'application/json':

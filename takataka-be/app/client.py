@@ -90,19 +90,32 @@ def edit_profile():
 
 	request_data = request.get_json()
 
-	query = '''UPDATE user SET email = '{}', phone = '{}', address = '{}' WHERE 
-	id = ('{}')'''.format(request_data["email"], request_data["phone"], 
-	request_data["address"], token['sub'])
-
 	conn = db.get_db()
 	cur = conn.cursor()
+
+	pass_check = '''SELECT password FROM user WHERE id = {}'''.format(token['sub'])
+	cur.execute(pass_check)
+	conn.commit()
+	result = cur.fetchone()
+	pwd = result["password"]
+	message = "Update Successful!"
+
+	if "old_password" in request_data and "new_password" in request_data:
+		if helper.string_hash(request_data['old_password']) == pwd:
+			pwd = helper.string_hash(request_data["new_password"])
+		else:
+			message = "Update successful but invalid old password was given hence password was not reset!"
+
+	query = '''UPDATE user SET username = '{}', phone = '{}', address = '{}', password = '{}' WHERE 
+	id = ('{}')'''.format(request_data["username"], request_data["phone"], request_data["address"] , pwd , token['sub'])
+
 	result = cur.execute(query)
 	conn.commit()
 
 	if result < 1:
 		return make_response({'status': 0, 'message': 'Couldn\'t update user details. Try later'}, 500)
 	
-	return make_response({'status': 1, 'message': 'Update Successful'}, 200)
+	return make_response({'status': 1, 'message': message}, 200)
 
 
 @bp.route('balance', methods=['GET'])
