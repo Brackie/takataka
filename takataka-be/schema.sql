@@ -35,7 +35,7 @@ CREATE TABLE `orders` (
 	`debit` FLOAT(10) NOT NULL,
 	`balance` FLOAT(10) NOT NULL,
 
-	PRIMARY KEY(id),
+	PRIMARY KEY(id)
 );
 
 
@@ -49,3 +49,11 @@ CREATE TABLE `announcements` (
 );
 
 INSERT INTO announcements (content) VALUES ('Hello, welcome to our platform!'), ('Would you like a tour?');
+
+INSERT INTO product (name, category, price, quantity, description) VALUES 
+("Product 1", "category 1", 100.0, 100, "Brief description"), 
+("Product 2", "category 1", 100.0, 100, "Brief description"), 
+("Product 3", "category 1", 100.0, 100, "Brief description"), 
+("Product 4", "category 1", 100.0, 100, "Brief description"), 
+("Product 5", "category 1", 100.0, 100, "Brief description"),
+("Product 1", "category 1", 100.0, 100, "Brief description");
