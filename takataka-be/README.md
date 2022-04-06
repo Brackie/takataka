@@ -8,7 +8,7 @@ A garbage collection sales backend done in Flask (https://flask.palletsprojects.
 - MySql installation (https://www.mysql.com/downloads/)
 
 ### Python installations
-> cd current_directory (./ -> takataka)
+> cd working_directory (./takataka/takataka-be/)
 
 > pip install -r ./requirments.txt
 
@@ -20,17 +20,20 @@ Copy ./config.py.example >> ./config.py
 - Refer to ./app/schema.sql for 'db_name'
 
 To initialize tables:
-- Login to mysql console
-> cd current_dir (./ -> takataka)
+> cd working_dir (./takataka/takataka-be/)
+
+- Login to mysql console: 
 
 > mysql -u user_name -p db_name
 
 - Once in the shell
->  source ./app/schema.sql
+
+>  source ./schema.sql
 
 ## Flask create app
 Once all libraries are installed
 - Linux
+
 > $ export FLASK_APP='./app'
 
 > $ export FLASK_ENV='development'
@@ -39,8 +42,8 @@ Once all libraries are installed
 
 > Running on http://127.0.0.1:5000/
 
-
 - Windows CMD
+
 > set FLASK_APP='./app'
 
 > set FLASK_ENV='development'
@@ -50,15 +53,16 @@ Once all libraries are installed
 > Running on http://127.0.0.1:5000/
 
 - Windows Powershel
+
 > $env:FLASK_APP="./app"
 
 > $env:FLASK_ENV="development"
 
 > flask run
 
-> Running on http://127.0.0.1:5000/
+- Your flask app should now be running on http://127.0.0.1:5000/
 
 ## Postman Collection
 - Open postman
 - File > Import > Upload files
-- Select collection at ./takataka.postman_collection.json
+- Select collection at ./takataka/takataka-be/takataka.postman_collection.json
