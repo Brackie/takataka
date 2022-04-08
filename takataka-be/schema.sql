@@ -21,7 +21,7 @@ CREATE TABLE `product` (
 	`category` VARCHAR(10) NOT NULL,
 	`price` FLOAT(10) NOT NULL,
 	`quantity` INTEGER(10) NOT NULL,
-	`description` VARCHAR(100) NOT NULL,
+	`description` VARCHAR(500) NOT NULL,
 
 	PRIMARY KEY(id)
 );
@@ -30,7 +30,7 @@ CREATE TABLE `orders` (
 	`id` INTEGER(25) NOT NULL AUTO_INCREMENT,
 	`user_id` INTEGER(25) NOT NULL,
 	`number` INTEGER(10) NOT NULL,
-	`description` VARCHAR(100) NOT NULL,
+	`description` VARCHAR(2000) NOT NULL,
 	`credit` FLOAT(10) NOT NULL,
 	`debit` FLOAT(10) NOT NULL,
 	`balance` FLOAT(10) NOT NULL,

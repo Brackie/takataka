@@ -24,7 +24,7 @@ To initialize tables:
 
 - Login to mysql console: 
 
-> mysql -u user_name -p db_name
+> mysql -u user_name -p
 
 - Once in the shell
 
